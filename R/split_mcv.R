@@ -3,11 +3,12 @@
 #' @author R.C.S
 #' @param var Takes a string variable from a data frame with 'n' possible values
 #' @param n a string with an integer which is the maximum number of possible values in a individual subject
+#' @param dataf Data frame from which the variable will be taken
 #' @return a data frame
 #' @export
 
-split_mcv <- function (var,n) {
-  charc <- as.character(emocemp[[var]])
+split_mcv <- function (var,n,dataf) {
+  charc <- as.character(dataf[[var]])
   split <- str_split_fixed(charc, ",", n)
   df <- as.data.frame(split)
   # Change to numeric
@@ -21,11 +22,3 @@ split_mcv <- function (var,n) {
 }
 
 
-mutate_mcv <- function (df, vec, n) {
-  for (i in vec) {
-    new_df <- df %>%
-      mutate(i = ifelse(df[,c]))
-
-  }
-
-}

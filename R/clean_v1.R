@@ -108,7 +108,7 @@ clean_v1 <- function (datafile){
               "romboencefalite",
               "outros_clinic")
 
-  df_clinica <- split_mcv("clinica_onset","7")
+  df_clinica <- split_mcv("clinica_onset","7",emocemp)
   df_clinica <- mutate_mcv(name_c, df_clinica)
 
   # Acute treatment dumming
@@ -118,7 +118,7 @@ clean_v1 <- function (datafile){
                "plex",
                "nenhum_ta")
 
-  df_tta <- split_mcv("tto_fa","5")
+  df_tta <- split_mcv("tto_fa","5",emocemp)
   df_tta <- mutate_mcv(name_ta, df_tta)
 
   # Brain MRI dumming
@@ -138,7 +138,7 @@ clean_v1 <- function (datafile){
                       "naorealizada_brm",
                       "outras_brm")
 
-  df_brm <- split_mcv("brain_mr","15")
+  df_brm <- split_mcv("brain_mr","15",emocemp)
   df_brm <- mutate_mcv(name_brain_mri, df_brm)
 
   # Spinal MRI dumming
@@ -156,7 +156,7 @@ clean_v1 <- function (datafile){
                        "bright_spot",
                        "outras_srm")
 
-  df_srm <- split_mcv("spinal_rm","13")
+  df_srm <- split_mcv("spinal_rm","13",emocemp)
   df_srm <- mutate_mcv(name_spinal_mri, df_srm)
 
   # Orbital MRI dumming
@@ -169,7 +169,7 @@ clean_v1 <- function (datafile){
                         "nao_realizada_orbitrm",
                         "outras_orbitrm")
 
-  df_orm <- split_mcv("orbit_rm","8")
+  df_orm <- split_mcv("orbit_rm","8",emocemp)
   df_orm <- mutate_mcv(name_orbital_mri, df_orm)
 
   # Merge dfs
