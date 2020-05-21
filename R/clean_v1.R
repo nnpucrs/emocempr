@@ -1,17 +1,15 @@
-library(stringr)
-library(dplyr)
-library(data.table)
-library(lubridate)
+#' Takes the raw .csv file exported from qualtrics and clean it
+#'
+#' @param datafile a V1 .csv file exported from qualtrics with numeric data option
+#' @export
+#' @author R.C.S
 
-
-
-cleanv1 <- function (datafile){
+clean_v1 <- function (datafile){
   emocemp_messy <- read.csv(datafile,
                             skip = 1,
                             encoding = "UTF-8") # Load Data
   emocemp <- emocemp_messy[-c(1),-c(1:17)] # Exclude irrelevant rows and collumns from table
   emocemp_control <- emocemp
-  emocemp <- as.data.table(emocemp)
 
   # Renaming collumns
   emocemp <- emocemp %>%
@@ -101,6 +99,82 @@ cleanv1 <- function (datafile){
     )
 
   # HERE DO MUTATE SCRIPT
+  # Clinical dumming
+  name_c <- c("neurite_b",
+              "neurite_u",
+              "mielite_parcial",
+              "adem",
+              "mielite_transversa",
+              "romboencefalite",
+              "outros_clinic")
+
+  df_clinica <- split_mcv("clinica_onset","7")
+  df_clinica <- mutate_mcv(name_c, df_clinica)
+
+  # Acute treatment dumming
+  name_ta <- c("ivmp",
+               "corticode_vo",
+               "igiv",
+               "plex",
+               "nenhum_ta")
+
+  df_tta <- split_mcv("tto_fa","5")
+  df_tta <- mutate_mcv(name_ta, df_tta)
+
+  # Brain MRI dumming
+  name_brain_mri <- c("uma_ou_mais_perpendicular",
+                      "apenas_bem_delimitadas",
+                      "cinco_ou_mais_t2",
+                      "duas_ou_mais_peri",
+                      "uma_ou_mais_tronco",
+                      "black_holes",
+                      "difusas_bilat",
+                      "uma_ou_mais_justa",
+                      "uma_ou_mais_peri",
+                      "uma_ou_mais_infra",
+                      "realce_anel_inc",
+                      "outro_realce",
+                      "nenhum_brm",
+                      "naorealizada_brm",
+                      "outras_brm")
+
+  df_brm <- split_mcv("brain_mr","15")
+  df_brm <- mutate_mcv(name_brain_mri, df_brm)
+
+  # Spinal MRI dumming
+  name_spinal_mri <- c("mielite_trans_mr",
+                       "mielite_centromedular",
+                       "mielite_perif",
+                       "mielite_menos3",
+                       "letm",
+                       "mielite_cerv",
+                       "mielite_dorsal",
+                       "mielite_lombo",
+                       "nenhuma_spinalmr",
+                       "nao_realizada_srm",
+                       "realce_medular",
+                       "bright_spot",
+                       "outras_srm")
+
+  df_srm <- split_mcv("spinal_rm","13")
+  df_srm <- mutate_mcv(name_spinal_mri, df_srm)
+
+  # Orbital MRI dumming
+  name_orbital_mri <- c("hipersinal_retrob",
+                        "hipersinal_quiasma",
+                        "hipersinal_media",
+                        "hipersinal_extensa",
+                        "realce_orbit",
+                        "nenhuma_orbitrm",
+                        "nao_realizada_orbitrm",
+                        "outras_orbitrm")
+
+  df_orm <- split_mcv("orbit_rm","8")
+  df_orm <- mutate_mcv(name_orbital_mri, df_orm)
+
+  # Merge dfs
+  dummed <- cbind(df_orm,df_srm,df_brm,df_tta,df_clinica)
+  emocemp <- cbind(emocemp, dummed)
 
 
   # -------------------------------------------
@@ -136,7 +210,7 @@ cleanv1 <- function (datafile){
 
   # IMC
   emocemp$imc <- as.character(emocemp$imc)
-  emocemp$imc <- as.numeric(str_replace(emocemp$imc, ",",","))
+  emocemp$imc <- as.numeric(str_replace(emocemp$imc, ",","."))
 
   # Tabagismo
   emocemp$tabagismo <- as.character(emocemp$tabagismo)
@@ -152,7 +226,7 @@ cleanv1 <- function (datafile){
   # Change to numeric and divided by 2 (it is doubled from the exportation)
   emocemp$edss <- as.character(emocemp$edss)
   emocemp$edss <- as.numeric(emocemp$edss)
-  emocemp$edss <- emocemp$edss[!is.na(emocemp$edss)] / 2
+  emocemp$edss <- emocemp$edss / 2
   #Create index to verify 0.5 EDSS
   emocemp <- emocemp %>%
     mutate(edss_i = if_else(edss < 1, TRUE, FALSE))
@@ -229,171 +303,22 @@ cleanv1 <- function (datafile){
   emocemp$lcr_cel <- correct_cel
   # Oligoclonal bands
   lcr_messy$boc <- tolower(lcr_messy$boc)
-
-
-
   # Create new IMC column with calculated from weight and height
   emocemp <- emocemp %>%
     mutate(imc_c = peso / altura^2)
 
-  # Load autoantibodies data
-  autoantibody <- read.csv(file_mog)
-  autoantibody <- rename(autoantibody,
-                         id_paciente = n ,
-                         mog = mog.positivo)
 
-  # Merge datasets
-  emocemp_merged_complete <- merge(emocemp, autoantibody, by = "id_paciente", all.x = TRUE)
-  emocemp_merged_quali <- merge(emocemp, autoantibody, by = "id_paciente") # Only patients already tested for ab
+  col_2_exclude <- c("edss_i",
+                     "clinica_onset",
+                     "tto_fa",
+                     "brain_mr",
+                     "orbit_mr",
+                     "spinal_mr"
+                     )
 
-  # Sourcing V2 cleaning #
-  data2 <- file_v2
-  emocemp2_messy <- read.csv(data2,
-                             skip = 1) # Load Data
-  emocemp2 <- emocemp2_messy[-c(1),-c(1:17)] # Exclude irrelevant rows and collumns from table
-  emocemp2 <- emocemp2[, -79]
-  emocemp_control2 <- emocemp2
-  emocemp2 <- as.data.table(emocemp2)
+  cleaned <- emocemp[, ! names(emocemp) %in% col_2_exclude, drop = F]
 
-  # Rename columns
-  emocemp2 <- emocemp2 %>%
-    rename(data_visita2 = Data.da.consulta..dia.mês.ano. ,
-           id_centro = Identificação.do.Centro...Selecione.o.centro ,
-           id_paciente = Identificação.do.paciente..número.na.pesquisa. ,
-           peso2 = Peso.altura.IMC...Dados.antropométricos...Peso..kg. ,
-           altura2 = Peso.altura.IMC...Dados.antropométricos...Altura..m. ,
-           imc2 = Peso.altura.IMC...Dados.antropométricos...IMC.kg.m. ,
-           tabagismo2 = Tabagismo ,
-           sf_piramidal2 = Sistemas.funcionais...Piramidal ,
-           sf_cerebelar2 = Sistemas.funcionais...Cerebelar ,
-           sf_sensitivo2 = Sistemas.funcionais...Sensitivo ,
-           sf_tronco2 = Sistemas.funcionais...Tronco.encefálico ,
-           sf_visual2 = Sistemas.funcionais...Visual ,
-           sf_vesical_intestinal2 = Sistemas.funcionais...Vesical.Intestinal ,
-           sf_cerebral2 = Sistemas.funcionais...Cerebral ,
-           convers_vesical_intestinal2 = Conversão.sistemas.funcionais...Vesical..Intestinal ,
-           convers_visual2 = Conversão.sistemas.funcionais...Visual ,
-           deambulacao2 = Deambulação...Avaliar.deambulação ,
-           edss2 = EDSS ,
-           data_brain_mr2 = Datas.exames.neuroimagem..especificar.para.exames.realizados.desde.a.última.consulta....Encéfalo...Dia.Mês.Ano ,
-           data_spinal_mr2 = Datas.exames.neuroimagem..especificar.para.exames.realizados.desde.a.última.consulta....Medula...Dia.Mês.Ano ,
-           data_orbit_mr2 = Datas.exames.neuroimagem..especificar.para.exames.realizados.desde.a.última.consulta....Órbitas...Dia.Mês.Ano ,
-           brain_mr2 = Neuroimagem...encéfalo..marcar.se.alteração.presente....incluir.apenas.novos.exames...Selected.Choice ,
-           brain_mr2_text = Neuroimagem...encéfalo..marcar.se.alteração.presente....incluir.apenas.novos.exames...Outras...Text ,
-           brain_mr2_realce = Neuroimagem...encéfalo..marcar.se.alteração.presente....incluir.apenas.novos.exames...Outros.padrões.de.realce..descrever.localização.e.padrão.do.realce....Text ,
-           orbit_mr2 = Neuroimagem...RM.órbita...observar.nervo.óptico..NO...marcar.se.alteração.presente....incluir.apenas.novos.exames...Selected.Choice ,
-           orbit_mr2_text = Neuroimagem...RM.órbita...observar.nervo.óptico..NO...marcar.se.alteração.presente....incluir.apenas.novos.exames...Outras...Text ,
-           orbit_mr2_realce = Neuroimagem...RM.órbita...observar.nervo.óptico..NO...marcar.se.alteração.presente....incluir.apenas.novos.exames...Realce.pelo.gadolínio..descrever.localização.no.NO....Text ,
-           spinal_mr2 = Neuroimagem...RM.medular..marcar.se.alteração.presente....incluir.apenas.novos.exames...Selected.Choice ,
-           spinal_mr2_text = Neuroimagem...RM.medular..marcar.se.alteração.presente....incluir.apenas.novos.exames...Outras...Text ,
-           spinal_mr2_realce = Neuroimagem...RM.medular..marcar.se.alteração.presente....incluir.apenas.novos.exames...Realce.pelo.gadolínio..descrever.localização.e.padrão.do.realce....Text ,
-           image2_outros = Neuroimagem...outros..incluir.apenas.novos.exames. ,
-           medic_cont2 = Medicações.de.uso.contínuo..nome.genérico..dose.e.posologia. ,
-           criterio_diag2 = Preenche.critérios.diagnósticos.para...Selected.Choice ,
-           criterio_diag2_outros = Preenche.critérios.diagnósticos.para...Outras...Text ,
-           fan2 = Novos.exames.laboratoriais.séricos...FAN..título.e.padrão. ,
-           fr2 = Novos.exames.laboratoriais.séricos...FR..positivo.ou.negativo. ,
-           vhs2 = Novos.exames.laboratoriais.séricos...VHS..mm.h. ,
-           ssa2 = Novos.exames.laboratoriais.séricos...anti.SSA..UI. ,
-           ssb2 = Novos.exames.laboratoriais.séricos...anti.SSB..UI. ,
-           vitd2 = Novos.exames.laboratoriais.séricos...25.OH.vitamina.D..ng.mL. ,
-           vitb12_2 = Novos.exames.laboratoriais.séricos...Vitamina.B12..pg.mL. ,
-           labs_outros2 = Novos.exames.laboratoriais.séricos...Outros.exames ,
-           dmd2 = Droga.modificadora.da.doença..dose.posologia....Selected.Choice ,
-           ifb_im_2 = Droga.modificadora.da.doença..dose.posologia....Interferon.beta.1a.IM...Text ,
-           ifb_sc_22_2 = Droga.modificadora.da.doença..dose.posologia....Interferon.beta.1a.SC.22mcg...Text ,
-           ifb_sc_44_2 = Droga.modificadora.da.doença..dose.posologia....Interferon.beta.1a.SC.44mcg...Text ,
-           ifb_1b_2 = Droga.modificadora.da.doença..dose.posologia....Interferon.beta.1b...Text ,
-           glatir2 = Droga.modificadora.da.doença..dose.posologia....Acetato.de.glatiramer...Text ,
-           teriflu2 = Droga.modificadora.da.doença..dose.posologia....Teriflunomida...Text ,
-           fumarato2 = Droga.modificadora.da.doença..dose.posologia....Fumarato.de.dimetila...Text ,
-           fingo2 = Droga.modificadora.da.doença..dose.posologia....Fingolimode...Text ,
-           nataliz2 = Droga.modificadora.da.doença..dose.posologia....Natalizumab...Text ,
-           alentuz2 = Droga.modificadora.da.doença..dose.posologia....Alentuzumab...Text ,
-           rituxi2 = Droga.modificadora.da.doença..dose.posologia....Rituximab...Text ,
-           azat2 = Droga.modificadora.da.doença..dose.posologia....Azatioprina...Text ,
-           dmd_outros2 = Droga.modificadora.da.doença..dose.posologia....Outros...Text ,
-           ae_2 = Efeitos.adversos...Selected.Choice ,
-           ae_2_text = Efeitos.adversos...Outros...Text ,
-           obsv_2 = Observações ,
-           surto2 = Novo.surto.desde.a.última.consulta..se.resposta.positiva.responder.as.questões.seguintes. ,
-           surto_2_clinic = Novas.síndromes.clínicas..incluir.data....Selected.Choice ,
-           nob_data_v2 = Novas.síndromes.clínicas..incluir.data....Neurite.óptica.bilateral...Text ,
-           nou_data_v2 = Novas.síndromes.clínicas..incluir.data....Neurite.óptica.unilateral...Text ,
-           mielite_p_data_v2 = Novas.síndromes.clínicas..incluir.data....Mielite.parcial...Text ,
-           mielite_t_data_v2 = Novas.síndromes.clínicas..incluir.data....Mielite.transversa...Text ,
-           adem_data_v2 = Novas.síndromes.clínicas..incluir.data....ADEM...Text ,
-           rombo_data_v2 = Novas.síndromes.clínicas..incluir.data....Rombencefalite...Text ,
-           outras_clinic_data_v2 = Novas.síndromes.clínicas..incluir.data....Outras...Text ,
-           lcr_cel2 = Líquido.cefalorraquidiano...Celularidade..céls.uL. ,
-           lcr_dif2 = Líquido.cefalorraquidiano...Diferencial.... ,
-           lcr_prot2 = Líquido.cefalorraquidiano...Proteínas..mg.dL. ,
-           lcr_boc2 = Líquido.cefalorraquidiano...BOC..presentes.ausentes. ,
-           lcr_igg2 = Líquido.cefalorraquidiano...IgG.índex..mg.dL. ,
-           tto_fa2 = Tratamento.de.fase.aguda...dose.e.posologia...Selected.Choice ,
-           tto_ivmp2 = Tratamento.de.fase.aguda...dose.e.posologia...MP.IV...Text ,
-           tto_cortivo2 = Tratamento.de.fase.aguda...dose.e.posologia...Cortcoide.oral...Text ,
-           tto_igiv = Tratamento.de.fase.aguda...dose.e.posologia...Ig.IV...Text ,
-           tto_plex = Tratamento.de.fase.aguda...dose.e.posologia...Plasmaférse...Text
-    )
-
-  # Edss
-  emocemp2$edss2 <- as.character(emocemp2$edss2)
-  emocemp2$edss2 <- as.numeric(emocemp2$edss2) # Convert and coerce NAs
-  emocemp2$edss2 <- emocemp2$edss2[!is.na(emocemp2$edss2)] / 2 # Divide EDSS by 2
-  #Create index to verify 0.5 EDSS
-  emocemp2 <- emocemp2 %>%
-    mutate(edss_i = if_else(edss2 < 1, TRUE, FALSE))
-  # Change 0.5 for zeros
-  emocemp2$edss2[emocemp2$edss_i] <- 0
-
-  # Critérios diagnósticos
-  emocemp2$criterio_diag2 <- as.character(emocemp2$criterio_diag2)
-  emocemp2$criterio_diag2 <- as.numeric(emocemp2$criterio_diag2)
-  emocemp2$criterio_diag2 <- factor(emocemp2$criterio_diag2)
-  levels(emocemp2$criterio_diag2) <- c("em","nmosd","isolated","other")
-
-
-  # Merge V2
-  emocemp_quali <- merge(emocemp_merged_quali, emocemp2, by = "id_paciente", all.x = TRUE)
-
-  emocemp_quali_patients <- emocemp_quali %>%
-    filter(criterio_diag2 == "em" | mog == "1")
-
-
-
-  quali_final <- emocemp_quali_patients %>%
-    select(id_paciente ,
-           mog ,
-           criterio_diag2 ,
-           sex ,
-           etnic ,
-           idade_onset ,
-           idade_10 ,
-           imc_c ,
-           infeccao_2meses ,
-           tabagismo ,
-           data_vacina ,
-           nome_vacina ,
-           neurite_b ,
-           neurite_u ,
-           neurite_all ,
-           mielite_parcial ,
-           mielite_transversa ,
-           mielite_all ,
-           adem ,
-           romboencefalite ,
-           outros_clinic ,
-           edss ,
-           disease_duration_m ,
-           lcr_cel ,
-           lcr_prot ,
-           lcr_boc
-    )
-
-  # Exclude patient 106
-  quali_final <- quali_final[-3,]
+  return(cleaned)
   #
-  fwrite(quali_final, file = "quali_final.csv")
-  # write.xlsx(quali_final, file = "quali_final.xlsx")
+  fwrite(cleaned, file = "cleaned.csv")
 }
