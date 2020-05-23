@@ -5,7 +5,7 @@
 #' @param n a string with an integer which is the maximum number of possible values in a individual subject
 #' @param dataf Data frame from which the variable will be taken
 #' @return a data frame
-#' @export
+#'
 
 split_mcv <- function (var,n,dataf) {
   charc <- as.character(dataf[[var]])
