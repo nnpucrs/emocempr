@@ -1,7 +1,11 @@
 #' Takes the raw .csv file exported from qualtrics and clean it
-#'
+#' @description The raw data need to be exported from qualtrics EMOCEMP V1 in .csv with the numeric values option checked
 #' @param datafile a V1 .csv file exported from qualtrics with numeric data option
+#' @return a data.frame with cleaned data which may be used to merge with other visits
 #' @export
+#' @import dplyr
+#' @import stringr
+#' @import lubridate
 #' @author R.C.S
 
 clean_v1 <- function (datafile){
@@ -9,96 +13,39 @@ clean_v1 <- function (datafile){
                             skip = 1,
                             encoding = "UTF-8") # Load Data
   emocemp <- emocemp_messy[-c(1),-c(1:17)] # Exclude irrelevant rows and collumns from table
-  emocemp_control <- emocemp
+
 
   # Renaming collumns
-  emocemp <- emocemp %>%
-    rename(data_visita = Data.da.visita ,
-           id_centro = Identificação.do.Centro...Selecione.o.centro ,
-           id_paciente = Identificação.do.paciente..número.na.pesquisa. ,
-           registro_centro = Número.do.registro..no.centro. ,
-           tcle = TCLE.Termo.de.assentimento ,
-           inclusao = Critérios.de.inclusão ,
-           exclusao = Critérios.de.exclusão ,
-           nascimento = Data.de.nascimento..dia.mês.ano. ,
-           sex = Sexo ,
-           etnic = Raça..auto.determinação. ,
-           peso = Peso.altura.IMC...Dados.antropométricos...Peso..kg. ,
-           altura = Peso.altura.IMC...Dados.antropométricos...Altura..m. ,
-           imc = Peso.altura.IMC...Dados.antropométricos...IMC.kg.m² ,
-           data_onset = Data.de.início.dos.sintomas..dia.mês.ano. ,
-           clinica_onset = Apresentação.clínica.inicial...Selected.Choice ,
-           clinica_onset_outros = Apresentação.clínica.inicial...Outras...Texto ,
-           historia_familiar = História.familiar.de.doenças.autoimunes...Selected.Choice ,
-           historia_familiar_outros = História.familiar.de.doenças.autoimunes...Outras...Texto ,
-           infeccao_2meses = Infecção.nos.últimos.2.meses..Especificar.se.resposta.positiva...Selected.Choice ,
-           infeccao_especificar = Infecção.nos.últimos.2.meses..Especificar.se.resposta.positiva...Sim...Texto ,
-           data_vacina = Data.da.última.vacina ,
-           nome_vacina = Nome.da.última.s..vacinas.administradas.na.data.referida.na.questão.14 ,
-           tabagismo = Tabagismo ,
-           comorbidade = Comorbidades..especificar.doenças.sem.abreviações. ,
-           medicacao = Medicações.de.uso.contínuo..nome.genérico..dose.e.posologia. ,
-           sf_piramidal = Sistemas.funcionais...Piramidal ,
-           sf_cerebelar = Sistemas.funcionais...Cerebelar ,
-           sf_sensitivo = Sistemas.funcionais...Sensitivo ,
-           sf_tronco = Sistemas.funcionais...Tronco.encefálico ,
-           sf_visual = Sistemas.funcionais...Visual ,
-           sf_vesical_intestinal = Sistemas.funcionais...Vesical.Intestinal ,
-           sf_cerebral = Sistemas.funcionais...Cerebral ,
-           conver_visual = Conversão.sistemas.funcionais...Visual ,
-           conver_vesical_intestinal = Conversão.sistemas.funcionais...Vesical..Intestinal ,
-           deambulacao = Deambulação...Avaliar.deambulação ,
-           edss = EDSS ,
-           data_brain_rm = Datas.exames.neuroimagem..especificar.para.exames.realizados....Encéfalo...Dia.Mês.Ano ,
-           data_spinal_rm = Datas.exames.neuroimagem..especificar.para.exames.realizados....Medula...Dia.Mês.Ano ,
-           data_orbit_rm = Datas.exames.neuroimagem..especificar.para.exames.realizados....Órbitas...Dia.Mês.Ano ,
-           brain_mr = Neuroimagem...encéfalo..marcar.se.alteração.presente....Selected.Choice ,
-           brain_mr_realce = Neuroimagem...encéfalo..marcar.se.alteração.presente....Outros.padrões.de.realce.pelo.Gd...descrever.localização.e.padrão.do.realce....Texto ,
-           brain_outras = Neuroimagem...encéfalo..marcar.se.alteração.presente....Outras...Texto ,
-           orbit_rm = Neuroimagem...RM.órbita...observar.nervo.óptico..NO...marcar.se.alteração.presente....Selected.Choice ,
-           orbit_realce = Neuroimagem...RM.órbita...observar.nervo.óptico..NO...marcar.se.alteração.presente....Realce.pelo.gadolínio..descrever.localização.no.NO....Texto ,
-           spinal_rm = Neuroimagem...RM.medular..marcar.se.alteração.presente....Selected.Choice ,
-           spinal_realce = Neuroimagem...RM.medular..marcar.se.alteração.presente....Realce.pelo.gadolínio..descrever.localização.e.padrão.do.realce....Texto ,
-           spinal_outros = Neuroimagem...RM.medular..marcar.se.alteração.presente....Outras...Texto ,
-           rm_outros = Neuroimagem...outros ,
-           fan = Exames.laboratoriais.séricos...FAN..título.e.padrão. ,
-           fr = Exames.laboratoriais.séricos...FR..positivo.ou.negativo. ,
-           vhs = Exames.laboratoriais.séricos...VHS..mm.h. ,
-           ssa = Exames.laboratoriais.séricos...anti.SSA..UI. ,
-           ssb = Exames.laboratoriais.séricos...anti.SSB..UI. ,
-           vitd = Exames.laboratoriais.séricos...25.OH.vitamina.D..ng.mL. ,
-           b12 = Exames.laboratoriais.séricos...Vitamina.B12..pg.mL. ,
-           ebv = Exames.laboratoriais.séricos...EBV.IgG ,
-           cmv = Exames.laboratoriais.séricos...CMV.IgG ,
-           soro_outros = Exames.laboratoriais.séricos...Outras.sorologias ,
-           lcr_cel = Líquido.cefalorraquidiano...Celularidade..céls.uL. ,
-           lcr_dif = Líquido.cefalorraquidiano...Diferencial.... ,
-           lcr_prot = Líquido.cefalorraquidiano...Proteínas..mg.dL. ,
-           lcr_boc = Líquido.cefalorraquidiano...BOC..presentes.ausentes. ,
-           lcr_igg = Líquido.cefalorraquidiano...IgG.índex..mg.dL. ,
-           tto_fa = Tratamento.de.fase.aguda...dose.e.posologia...Selected.Choice ,
-           tto_fa_ivmp = Tratamento.de.fase.aguda...dose.e.posologia...MP.IV...Texto ,
-           tto_fa_co = Tratamento.de.fase.aguda...dose.e.posologia...Cortcoide.oral...Texto ,
-           tto_fa_igg = Tratamento.de.fase.aguda...dose.e.posologia...Ig.IV...Texto ,
-           tto_fa_plex = Tratamento.de.fase.aguda...dose.e.posologia...Plasmaférse...Texto ,
-           dmd = Droga.modificadora.da.doença..dose.posologia....Selected.Choice ,
-           dmd_ifb_im = Droga.modificadora.da.doença..dose.posologia....Interferon.beta.1a.IM...Texto ,
-           dmd_ifb_sc22 = Droga.modificadora.da.doença..dose.posologia....Interferon.beta.1a.SC.22mcg...Texto ,
-           dmd_ifb_sc44 = Droga.modificadora.da.doença..dose.posologia....Interferon.beta.1a.SC.44mcg...Texto ,
-           dmd_ifb = Droga.modificadora.da.doença..dose.posologia....Interferon.beta.1b...Texto ,
-           dmd_glatir = Droga.modificadora.da.doença..dose.posologia....Acetato.de.glatiramer...Texto ,
-           dmd_teriflu = Droga.modificadora.da.doença..dose.posologia....Teriflunomida...Texto ,
-           dmd_fuma = Droga.modificadora.da.doença..dose.posologia....Fumarato.de.dimetila...Texto ,
-           dmd_fingo = Droga.modificadora.da.doença..dose.posologia....Fingolimode...Texto ,
-           dmd_nat = Droga.modificadora.da.doença..dose.posologia....Natalizumab...Texto ,
-           dmd_alen = Droga.modificadora.da.doença..dose.posologia....Alentuzumab...Texto ,
-           dmd_ritux = Droga.modificadora.da.doença..dose.posologia....Rituximab...Texto ,
-           dmd_azt = Droga.modificadora.da.doença..dose.posologia....Azatioprina...Texto ,
-           dmd_outros = Droga.modificadora.da.doença..dose.posologia....Outros...Texto ,
-           obsv = Observações
-    )
+  colnames(emocemp) <- c("data_visita","id_centro","id_paciente",
+                        "registro_centro", "tcle", "inclusao",
+                        "exclusao", "nascimento", "sex",
+                        "etnic", "peso", "altura",
+                        "imc", "data_onset", "clinica_onset",
+                        "clinica_onset_outros","clinica_obs", "historia_familiar",
+                        "historia_familiar_outros",
+                        "infeccao_2meses", "infeccao_especificar", "data_vacina",
+                        "nome_vacina", "tabagismo", "comorbidade",
+                        "medicacao", "sf_piramidal", "sf_cerebelar",
+                        "sf_sensitivo", "sf_tronco", "sf_visual",
+                        "sf_vesical_intestinal", "sf_cerebral", "conver_visual",
+                        "conver_vesical_intestinal", "deambulacao", "edss",
+                        "data_brain_rm", "data_spinal_rm", "data_orbit_rm",
+                        "brain_mr", "brain_mr_realce", "brain_outras",
+                        "orbit_rm", "orbit_realce", "spinal_rm",
+                        "spinal_realce", "spinal_outros", "rm_outros",
+                        "fan", "fr", "vhs", "ssa", "ssb", "vitd",
+                        "b12", "ebv", "cmv",
+                        "soro_outros", "lcr_cel", "lcr_dif",
+                        "lcr_prot", "lcr_boc", "lcr_igg",
+                        "tto_fa","tto_fa_ivmp","tto_fa_co","tto_fa_igg",
+                        "tto_fa_plex","dmd","dmd_ifb_im","dmd_ifb_sc22",
+                        "dmd_ifb_sc44","dmd_ifb","dmd_glatir","dmd_teriflu",
+                        "dmd_fuma","dmd_fingo","dmd_nat","dmd_alen",
+                        "dmd_ritux","dmd_azt","dmd_outros","obsv"
 
-  # HERE DO MUTATE SCRIPT
+                        )
+
+
   # Clinical dumming
   name_c <- c("neurite_b",
               "neurite_u",
@@ -312,13 +259,11 @@ clean_v1 <- function (datafile){
                      "clinica_onset",
                      "tto_fa",
                      "brain_mr",
-                     "orbit_mr",
-                     "spinal_mr"
+                     "orbit_rm",
+                     "spinal_rm"
                      )
 
   cleaned <- emocemp[, ! names(emocemp) %in% col_2_exclude, drop = F]
 
   return(cleaned)
-  #
-  fwrite(cleaned, file = "cleaned.csv")
 }

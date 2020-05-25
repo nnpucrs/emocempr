@@ -2,7 +2,8 @@
 % Please edit documentation in R/mutate_mcv.R
 \name{mutate_mcv}
 \alias{mutate_mcv}
-\title{Creates a new data.frame (new_df) with appropriated variable names and values (dummies)}
+\title{Creates a new data.frame (new_df) with appropriated variable names and values (dummies)
+Takes a vector of strings and a data frame, usually resulted from split_mcv()}
 \usage{
 mutate_mcv(names, df)
 }
@@ -15,6 +16,7 @@ mutate_mcv(names, df)
 New data frame with the values distributed across subjects in the approriate factor level
 }
 \description{
+Creates a new data.frame (new_df) with appropriated variable names and values (dummies)
 Takes a vector of strings and a data frame, usually resulted from split_mcv()
 }
 \author{

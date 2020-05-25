@@ -1,6 +1,9 @@
 #' Takes a emocemp brain mri .csv file and clean it
-#'
+#' @import dplyr
+#' @import stringr
+#' @import lubridate
 #' @param datafile File extracted from qualtrics in .csv format with the numeric option
+#' @return a data frame with the input brain mri data cleaned
 #' @author R.C.S
 #' @export
 

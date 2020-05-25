@@ -9,8 +9,11 @@ clean_v1(datafile)
 \arguments{
 \item{datafile}{a V1 .csv file exported from qualtrics with numeric data option}
 }
+\value{
+a data.frame with cleaned data which may be used to merge with other visits
+}
 \description{
-Takes the raw .csv file exported from qualtrics and clean it
+The raw data need to be exported from qualtrics EMOCEMP V1 in .csv with the numeric values option checked
 }
 \author{
 R.C.S

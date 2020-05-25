@@ -1,6 +1,8 @@
 #' Creates a new data.frame (new_df) with appropriated variable names and values (dummies)
-#'
-#' Takes a vector of strings and a data frame, usually resulted from split_mcv()
+#'Takes a vector of strings and a data frame, usually resulted from split_mcv()
+#' @import dplyr
+#' @import stringr
+#' @import lubridate
 #' @author R.C.S
 #' @param names a vector of strings in the order of correspondent numeric values
 #' @param df a data frame with numeric values associated with the desired factor levels

@@ -1,6 +1,14 @@
-datafile <- "C:/Users/Rafael/Documents/emocempv2_2105.csv"
+#'Takes the raw dataset from qualtrics and clean it
+#'@description The raw data need to be exported from qualtrics EMOCEMP V2 in .csv with the numeric values option checked
+#' @import dplyr
+#' @import stringr
+#' @import lubridate
+#'@param datafile a V2 .csv file exported from qualtrics with numeric data option
+#'@return a data.frame with cleaned data which may be used to merge with other visits
+#'@export
+#'@author R.C.S
 
-function (datafile) {
+clean_v2 <- function (datafile) {
         print("Starting script")
 
         # Load Data
@@ -11,8 +19,8 @@ function (datafile) {
 
 
         # Exclude irrelevant rows and collumns from table
-        emocempv2 <- emocempv2[,-79]
         emocempv2 <- emocemp_messy[-c(1),-c(1:17)]
+        emocempv2 <- emocempv2[,-79]
 
         # Rename columns
         colnames(emocempv2) <- c("id_centro",
@@ -184,10 +192,11 @@ function (datafile) {
         if (length(levels(emocempv2$criterio_diag_v2)) == 4){
                 levels(emocempv2$criterio_diag_v2) <- c("em","nmosd",
                                                         "isolated_event",
-                                                        "outras") } else {
-                                                                levels(emocempv2$criterio_diag_v2) <- c("em","nmosd",
-                                                                                                        "isolated_event",
-                                                                                                        "outras","cis")}
+                                                        "outras")
+                } else {
+                        levels(emocempv2$criterio_diag_v2) <- c("em","nmosd",
+                                                                "isolated_event",
+                                                                "outras","cis")}
         # DMD dumming
         names_dmd <- c("ifnb_1a_im",
                    "ifnb_1a_22sc",
@@ -248,18 +257,16 @@ function (datafile) {
 
         # Cleaning dates
         print("Cleaning dates")
+        dates <- c("data_visita","romboencefalite_data",
+                   "data_cerebro_rm_v2","data_medula_rm_v2",
+                   "data_orbitas_rm_v2","nob_data",
+                   "nou_data","adem_data","outras_data","mielite_p_data",
+                   "mielite_t_data")
 
-        emocempv2$data_visita <- dmy(emocempv2$data_visita)
-        emocempv2$data_cerebro_rm_v2 <- dmy(emocempv2$data_cerebro_rm_v2)
-        emocempv2$data_medula_rm_v2 <- dmy(emocempv2$data_medula_rm_v2)
-        emocempv2$data_orbitas_rm_v2 <- dmy(emocempv2$data_orbitas_rm_v2)
-        emocempv2$nob_data <- dmy(emocempv2$nob_data)
-        emocempv2$nou_data <- dmy(emocempv2$nou_data)
-        emocempv2$adem_data <- dmy(emocempv2$adem_data)
-        emocempv2$outras_data <- dmy(emocempv2$outras_data)
-        emocempv2$mielite_p_data <- dmy(emocempv2$mielite_p_data)
-        emocempv2$mielite_t_data <- dmy(emocempv2$mielite_t_data)
-        emocempv2$romboencefalite_data <- dmy(emocempv2$romboencefalite_data)
+         for (i in dates) {
+                emocempv2[[i]] <- suppressWarnings(dmy(emocempv2[[i]]))
+        }
+
 
         print("Ok!")
 
@@ -275,19 +282,43 @@ function (datafile) {
 
         emocempv2$edss <- as.numeric(emocempv2$edss) / 2
         emocempv2$edss[emocempv2$edss == 0.5] <- 0
-
+        # Weigth
         emocempv2$peso <- as.numeric(str_replace(emocempv2$peso, ",","."))
-
+        # Heigth
         altura_i <- str_detect(emocempv2$altura, "^\\d{2}")
         emocempv2$altura <- as.numeric(str_replace(emocempv2$altura,",","."))
-        altura_cm <- emocempv2$altura[altura_i] / 100
+        altura_i[is.na(altura_i)] <- FALSE
+        emocempv2$altura[altura_i] <- emocempv2$altura[altura_i] / 100
+        # IMC
+        emocempv2$imc <- as.numeric(str_replace(emocempv2$imc,",","."))
+        # Cleaning LCR strings
 
+                # Input NAs
+                emocempv2$lcr_boc[!str_detect(emocempv2$lcr_boc,"")] <- NA
+                emocempv2$lcr_cel[!str_detect(emocempv2$lcr_cel,"")] <- NA
+                emocempv2$lcr_prot[!str_detect(emocempv2$lcr_prot,"")] <- NA
+                emocempv2$lcr_igg_i[!str_detect(emocempv2$lcr_igg_i,"")] <- NA
 
+                # Clean strings
+                # Protein
+                emocempv2$lcr_prot <- str_extract(emocempv2$lcr_prot,
+                                                  "^\\d{1,3}[\\. ,]?\\d{0,3}$")
 
+                # Cel
+                emocempv2$lcr_cel <- str_extract(emocempv2$lcr_cel,
+                                                  "^\\d{1,3}[\\. ,]?\\d{0,3}")
+                emocempv2$lcr_cel <- as.numeric(str_replace(emocempv2$lcr_cel,
+                                                 ",","."))
+                # BOC
 
+        # Binary variable
+        emocempv2$novo_surto_v2 <- as.numeric(emocempv2$novo_surto_v2)
+        emocempv2$novo_surto_v2 <- as.factor(emocempv2$novo_surto_v2)
+        levels(emocempv2$novo_surto_v2) <- c("sim","nao")
 
+        return(emocempv2)
 
-}
+        }
 
 
 

@@ -1,5 +1,7 @@
 #' Takes a variable with multiple numeric variables and split into a data.frame with unique values in each col
-#'
+#' @import dplyr
+#' @import stringr
+#' @import lubridate
 #' @author R.C.S
 #' @param var Takes a string variable from a data frame with 'n' possible values
 #' @param n a string with an integer which is the maximum number of possible values in a individual subject

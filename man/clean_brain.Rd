@@ -9,6 +9,9 @@ clean_brain(datafile)
 \arguments{
 \item{datafile}{File extracted from qualtrics in .csv format with the numeric option}
 }
+\value{
+a data frame with the input brain mri data cleaned
+}
 \description{
 Takes a emocemp brain mri .csv file and clean it
 }
