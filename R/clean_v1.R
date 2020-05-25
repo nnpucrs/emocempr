@@ -14,6 +14,7 @@ clean_v1 <- function (datafile){
                             encoding = "UTF-8") # Load Data
   emocemp <- emocemp_messy[-c(1),-c(1:17)] # Exclude irrelevant rows and collumns from table
 
+  print("starting script")
 
   # Renaming collumns
   colnames(emocemp) <- c("data_visita","id_centro","id_paciente",
@@ -45,7 +46,7 @@ clean_v1 <- function (datafile){
 
                         )
 
-
+  print("Dumming multiple choice variables")
   # Clinical dumming
   name_c <- c("neurite_b",
               "neurite_u",
@@ -122,8 +123,9 @@ clean_v1 <- function (datafile){
   # Merge dfs
   dummed <- cbind(df_orm,df_srm,df_brm,df_tta,df_clinica)
   emocemp <- cbind(emocemp, dummed)
-
-
+  print("Done")
+  print("cleaning factors")
+  # Cleaning factors
   # -------------------------------------------
   # Demographics ------------------------------
   # -------------------------------------------
@@ -143,6 +145,10 @@ clean_v1 <- function (datafile){
   emocemp$sex <- as.numeric(emocemp$sex)
   emocemp$sex <- as.factor(emocemp$sex)
   levels(emocemp$sex) <- c("m", "f")
+  print("Done")
+
+
+  print("Cleaning numerics")
 
   # Altura
   emocemp$altura <- as.character(emocemp$altura)
@@ -180,7 +186,10 @@ clean_v1 <- function (datafile){
   # Change 0.5 for zeros
   emocemp$edss[emocemp$edss_i] <- 0
 
+  print("Done")
   # Dates ------------------------------------------------
+
+  print("Cleaning dates")
   # Nascimento
   emocemp$nascimento <- dmy(emocemp$nascimento)
   # Visit
@@ -212,8 +221,8 @@ clean_v1 <- function (datafile){
   # Create age factor > | < 10
   emocemp <- emocemp %>%
     mutate(idade_10 = ifelse(idade_onset <= 10, "m", "M") )
-
-
+  print("Done")
+  print("Cleaning strings")
   # -----------------------------------------
   # LCR -------------------------------------
   # -----------------------------------------
@@ -254,7 +263,8 @@ clean_v1 <- function (datafile){
   emocemp <- emocemp %>%
     mutate(imc_c = peso / altura^2)
 
-
+  print("Done")
+  print("Writing final data frame")
   col_2_exclude <- c("edss_i",
                      "clinica_onset",
                      "tto_fa",
@@ -264,6 +274,8 @@ clean_v1 <- function (datafile){
                      )
 
   cleaned <- emocemp[, ! names(emocemp) %in% col_2_exclude, drop = F]
+  print("Script completed")
 
   return(cleaned)
+
 }
