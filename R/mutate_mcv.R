@@ -7,7 +7,7 @@
 #' @param names a vector of strings in the order of correspondent numeric values
 #' @param df a data frame with numeric values associated with the desired factor levels
 #' @return New data frame with the values distributed across subjects in the approriate factor level
-#'
+#' @export
 
 mutate_mcv <- function (names, df){
   # Aceita uma lista de strings (names) e um data.frame resultante de split.mcv
