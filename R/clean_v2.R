@@ -116,7 +116,7 @@ clean_v2 <- function (datafile) {
                            "outras",
                            "nenhumas_das_sindromes")
 
-        clinical_df <- split_mcv("novas_sindromes_clinicas","8",emocempv2)
+        clinical_df <- split_mcv("novas_sindromes_clinicas",8,emocempv2)
         clinical_df <- mutate_mcv(name_clinical,clinical_df)
         # Include and exclude
         emocempv2 <- emocempv2[, names(emocempv2) != "novas_sindromes_clinicas"]
@@ -140,7 +140,7 @@ clean_v2 <- function (datafile) {
                            "outras_brm",
                            "realce_anel_inc_brm")
 
-        brm_df <- split_mcv("rm_encefalo","15",emocempv2)
+        brm_df <- split_mcv("rm_encefalo",15,emocempv2)
         # Correct for qualtrics inconsistency
         brm_df[brm_df == 17] <- 15
         # Continue
@@ -164,7 +164,7 @@ clean_v2 <- function (datafile) {
                       "brigth_spot_srm",
                       "outras_srm")
 
-        srm_df <- split_mcv("rm_medula","13",emocempv2)
+        srm_df <- split_mcv("rm_medula",13,emocempv2)
         srm_df <- mutate_mcv(name_srm,srm_df)
         # Include and exclude
         emocempv2 <- emocempv2[, names(emocempv2) != "rm_medula"]
@@ -181,7 +181,7 @@ clean_v2 <- function (datafile) {
                       "nao_realizada_orm",
                       "outras_orm")
 
-        orm_df <- split_mcv("rm_orbita","8",emocempv2)
+        orm_df <- split_mcv("rm_orbita",8,emocempv2)
         orm_df <- mutate_mcv(name_orm,orm_df)
         # Include and exclude
         emocempv2 <- emocempv2[, names(emocempv2) != "rm_orbita"]
@@ -213,7 +213,7 @@ clean_v2 <- function (datafile) {
                    "outros_dmds",
                    "nenhum_dmd")
 
-        dmd_df <- split_mcv("dmd_v2","14",emocempv2)
+        dmd_df <- split_mcv("dmd_v2",14,emocempv2)
         dmd_df <- mutate_mcv(names_dmd,dmd_df)
         # Include and exclude
         emocempv2 <- emocempv2[, names(emocempv2) != "dmd_v2"]
@@ -226,7 +226,7 @@ clean_v2 <- function (datafile) {
                        "plex",
                        "nenhum_tto_a")
 
-        tta_df <- split_mcv("tto_fa_v2","5",emocempv2)
+        tta_df <- split_mcv("tto_fa_v2",5,emocempv2)
         tta_df <- mutate_mcv(names_tta,tta_df)
         # Include and exclude
         emocempv2 <- emocempv2[, names(emocempv2) != "tto_fa_v2"]
@@ -247,7 +247,7 @@ clean_v2 <- function (datafile) {
                        "elev_transaminases_ae",
                        "outros")
 
-        ae_df <- split_mcv("efeitos_adversos","12",emocempv2)
+        ae_df <- split_mcv("efeitos_adversos",12,emocempv2)
         ae_df <- mutate_mcv(names_ae,ae_df)
         # Include and exclude
         emocempv2 <- emocempv2[, names(emocempv2) != "efeitos_adversos"]
