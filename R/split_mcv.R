@@ -1,7 +1,7 @@
 #' Takes a variable with multiple numeric variables and split into a data.frame with unique values in each col
 #' @import dplyr
 #' @import stringr
-#' @import lubridate
+#' @importFrom utils read.csv
 #' @author R.C.S
 #' @param var Takes a string variable from a data frame with 'n' possible values
 #' @param n Integer with the maximum number of possible values in a individual subject
@@ -10,17 +10,14 @@
 #' @export
 
 
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)  {
-  abs(x - round(x)) < tol
-}
 
 split_mcv <- function (var,n,dataf) {
   # Check if n is integer
   if (!is.numeric(n)){
-    return(print("Por favor insira um valor válido para n"))
+    return(print("Por favor insira um valor valido para n"))
   }
   if (!is.wholenumber(n)) {
-    return(print("Por favor insira um valor válido para n"))
+    return(print("Por favor insira um valor valido para n"))
     }
 
   # Main

@@ -5,7 +5,8 @@
 #' @export
 #' @import dplyr
 #' @import stringr
-#' @import lubridate
+#' @importFrom lubridate dmy
+#' @importFrom utils read.csv
 #' @author R.C.S
 
 clean_v1 <- function (datafile){

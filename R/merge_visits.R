@@ -1,8 +1,8 @@
 #' Merge data from different visits. Set at least two cleaned visit data files.
 #' @import dplyr
 #' @import stringr
-#' @import lubridate
-#' @import data.table
+#' @importFrom lubridate dmy
+#' @importFrom data.table melt
 #' @param v1 data frame resulted from \link{clean_v1}
 #' @param v2 data frame resulted from \link{clean_v2}
 #' @param v3 data frame resulted from \link{clean_v3} ; Default is = NULL

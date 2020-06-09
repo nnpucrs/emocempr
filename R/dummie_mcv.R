@@ -1,7 +1,6 @@
 #' Combines mutate_mcv and split_mcv to clean datasets
 #' @import dplyr
 #' @import stringr
-#' @import lubridate
 #' @author R.C.S
 #' @param names a vector of strings with names in the order of correspondent numeric values
 #' @param dataf a data frame with numeric values associated with the desired factor

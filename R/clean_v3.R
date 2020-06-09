@@ -2,7 +2,8 @@
 #'@description The raw data need to be exported from qualtrics EMOCEMP V3 in .csv with the numeric values option checked
 #' @import dplyr
 #' @import stringr
-#' @import lubridate
+#' @importFrom lubridate dmy
+#' @importFrom utils read.csv
 #'@param datafile a V3 .csv file exported from qualtrics with numeric data option
 #'@return a data.frame with cleaned data which may be used to merge with other visits
 #'@export

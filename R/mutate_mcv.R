@@ -2,7 +2,7 @@
 #'Takes a vector of strings and a data frame, usually resulted from split_mcv()
 #' @import dplyr
 #' @import stringr
-#' @import lubridate
+#' @importFrom utils read.csv
 #' @author R.C.S
 #' @param names a vector of strings in the order of correspondent numeric values
 #' @param df a data frame with numeric values associated with the desired factor levels
@@ -10,16 +10,16 @@
 #' @export
 
 mutate_mcv <- function (names, df){
-  # Aceita uma lista de strings (names) e um data.frame resultante de split.mcv
+  # Aceita uma lista de strings (names) e um data.frame resultante de split_mcv
 
   # Tests
   if (length(names) != ncol(df) ){
     print("Names e colunas do Data Frame com tamanhos diferentes")
-    break
+    return(1)
   }
   if (!is.data.frame(df)){
     print("df precisa ser um Data Frame")
-    break
+    return(2)
   }
 
   # Create empty data.frame
