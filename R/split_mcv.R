@@ -4,14 +4,28 @@
 #' @import lubridate
 #' @author R.C.S
 #' @param var Takes a string variable from a data frame with 'n' possible values
-#' @param n a string with an integer which is the maximum number of possible values in a individual subject
+#' @param n Integer with the maximum number of possible values in a individual subject
 #' @param dataf Data frame from which the variable will be taken
 #' @return a data frame
 #' @export
 
+
+is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)  {
+  abs(x - round(x)) < tol
+}
+
 split_mcv <- function (var,n,dataf) {
+  # Check if n is integer
+  if (!is.numeric(n)){
+    return(print("Por favor insira um valor válido para n"))
+  }
+  if (!is.wholenumber(n)) {
+    return(print("Por favor insira um valor válido para n"))
+    }
+
+  # Main
   charc <- as.character(dataf[[var]])
-  split <- str_split_fixed(charc, ",", n)
+  split <- str_split_fixed(charc, ",", as.character(n))
   df <- as.data.frame(split)
   # Change to numeric
   ncol = as.numeric(n)

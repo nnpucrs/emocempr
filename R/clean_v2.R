@@ -193,7 +193,7 @@ clean_v2 <- function (datafile) {
                 levels(emocempv2$criterio_diag_v2) <- c("em","nmosd",
                                                         "isolated_event",
                                                         "outras")
-                } else {
+                } else if (length(levels(emocempv2$criterio_diag_v2)) == 5) {
                         levels(emocempv2$criterio_diag_v2) <- c("em","nmosd",
                                                                 "isolated_event",
                                                                 "outras","cis")}
