@@ -7,7 +7,7 @@
 cohen_kappa_mri(datafile, varnames)
 }
 \arguments{
-\item{datafile}{a data frame resulted from clean_brain or clean_orbit}
+\item{datafile}{a data frame resulted from clean_brain, clean_orbit or clean_spinal}
 
 \item{varnames}{a string vector with variable names from the datasets}
 }

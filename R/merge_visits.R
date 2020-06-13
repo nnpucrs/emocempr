@@ -3,6 +3,7 @@
 #' @import stringr
 #' @importFrom lubridate dmy
 #' @importFrom data.table melt
+#' @importFrom data.table setDT
 #' @param v1 data frame resulted from \link{clean_v1}
 #' @param v2 data frame resulted from \link{clean_v2}
 #' @param v3 data frame resulted from \link{clean_v3} ; Default is = NULL
@@ -75,7 +76,7 @@ merge_visits <- function (v1, v2, v3 = NULL, mode = c("long","wide"), all.patien
                 name_repme <- c("edss","altura","peso","data_visita",
                                 "imc","dmd","lcr_prot","lcr_cel","tabagismo")
                 # Melt data
-                v1v2_wide <- suppressWarnings(data.table::melt(setDT(v1v2_long), measure.vars = repme,
+                v1v2_wide <- suppressWarnings(data.table::melt(data.table::setDT(v1v2_long), measure.vars = repme,
                                                                variable.name = "Visit", value.name = name_repme))
 
                 v1v2_wide$Visit[is.na(v1v2_wide$data_visita) & (v1v2_wide$Visit != 1)] <- NA

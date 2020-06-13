@@ -1,10 +1,10 @@
 #' Takes a cleaned data frame from MRI study and calculate cohen kappa for selected varibles
-#'@param datafile a data frame resulted from clean_brain or clean_orbit
+#'@param datafile a data frame resulted from clean_brain, clean_orbit or clean_spinal
 #'@param varnames a string vector with variable names from the datasets
 #'@return a list with kappa statistics for each selected variable
 #'@export
 #'@import dplyr
-#'@import irr
+#'@importFrom irr kappa2
 
 
 
