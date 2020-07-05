@@ -21,3 +21,7 @@ library(dtupdate)
 github_update()
 ```
 ## Common applications
+All functions are based on exported data from  qualtrics forms with this configuration (csv numeric)
+
+[Imgur](https://i.imgur.com/GQHBnN7.png)
+
