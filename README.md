@@ -45,6 +45,6 @@ v2 <- clean_v2("fileV2.csv")
 v3 <- clean_v3("fileV3.csv")
 merged <- merge_visits(v1,v2,v3, mode = "long", all.patients=FALSE)
 ```
-This will use *CLEANED* data from visits 1, 2 and 3, combine them into a "long" format (each observation as a line) and only for patients who have data collected from all 3 visits (all.patients=FALSE), and store the results into the merged object.
+This will use **CLEANED** data from visits 1, 2 and 3, combine them into a "long" format (each observation as a line) and only for patients who have data collected from all 3 visits (```all.patients=FALSE```), and store the results into the ```merged``` object.
 
-As before, one may convert this object to a csv file for analyzing in other software or follow the analysis whitin R.
+As before, one may convert this object to a csv file for analyzing in other software or carry on the analysis whitin R.
