@@ -25,3 +25,15 @@ All functions are based on exported data from  qualtrics forms with this configu
 
 ![](https://i.imgur.com/GQHBnN7.png)
 
+After that, you can start using the package functions, usually, all data exported from qualtrics needs to be cleaned so it can be analyzed. The package provides functions which perform this in basically all EMOCEMP forms, so for eg:
+
+```
+v1 <- clean_v1(file.csv)
+```
+This read the csv file downloaded from qualtrics, clean it and store the results in a R object: ```v1```. You can perform analysis directly in R using this object or write a csv file from the cleaned data in order to analyze other packages such as GraphPad, SPSS, Excel...
+
+If this is inteded, something like:
+```
+write.csv2(v1, "filename")
+```
+Should do it.
