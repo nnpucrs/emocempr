@@ -25,10 +25,10 @@ All functions are based on exported data from  qualtrics forms with this configu
 
 ![](https://i.imgur.com/GQHBnN7.png)
 
-After that, you can start using the package functions, usually, all data exported from qualtrics needs to be cleaned so it can be analyzed. The package provides functions which perform this in basically all EMOCEMP forms, so for eg:
+After that, you can start using the package functions, usually, all data exported from qualtrics needs to be cleaned so it can be analyzed. The package provides functions which perform this in basically all EMOCEMP forms, so for eg, given a Visit 1 form:
 
 ```
-v1 <- clean_v1(file.csv)
+v1 <- clean_v1("file.csv")
 ```
 This read the csv file downloaded from qualtrics, clean it and store the results in a R object: ```v1```. You can perform analysis directly in R using this object or write a csv file from the cleaned data in order to analyze other packages such as GraphPad, SPSS, Excel...
 
@@ -37,3 +37,14 @@ If this is inteded, something like:
 write.csv2(v1, "filename")
 ```
 Should do it.
+
+Further, there are package functions that allow for data manipulation in R. So, in case you wanted to bind multiple visits data you can use the ```merge_visits``` function
+```
+v1 <- clean_v1("fileV1.csv")
+v2 <- clean_v2("fileV2.csv")
+v3 <- clean_v3("fileV3.csv")
+merged <- merge_visits(v1,v2,v3, mode = "long", all.patients=FALSE)
+```
+This will use *CLEANED* data from visits 1, 2 and 3, combine them into a "long" format (each observation as a line) and only for patients who have data collected from all 3 visits (all.patients=FALSE), and store the results into the merged object.
+
+As before, one may convert this object to a csv file for analyzing in other software or follow the analysis whitin R.
