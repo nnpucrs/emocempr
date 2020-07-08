@@ -62,40 +62,45 @@
 <div id="emocempr-package" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#emocempr-package" class="anchor"></a>emocempR Package</h1></div>
-<div id="what-it-is" class="section level2">
+<div id="the-package" class="section level2">
 <h2 class="hasAnchor">
-<a href="#what-it-is" class="anchor"></a>What it is?</h2>
-<p>This is a package for internal use by the Multicentric Study of Pediatric Multiple Sclerosis (EMOCEMP) investigators. Here, we provide functions that facilitate manipulating data directly extracted from qualtrics in the <em>csv</em> numeric format. Moreover, this functions are used to generate reproducible and automated analysis, as well as an automated dashboard for the purpose of investigator consult.</p>
+<a href="#the-package" class="anchor"></a>The package?</h2>
+<p>This is a package for internal use by the Multicentric Study of Pediatric Multiple Sclerosis (EMOCEMP) investigators. Here, we provide functions that facilitate manipulating data directly extracted from qualtrics in the <em>.csv</em> numeric format. Moreover, this functions are used to generate reproducible and automated analysis, as well as an automated dashboard for the purpose of investigator consult.</p>
 </div>
 <div id="how-to-install" class="section level2">
 <h2 class="hasAnchor">
 <a href="#how-to-install" class="anchor"></a>How to install</h2>
 <p>To install the emocempr package to as following in your R console.</p>
-<pre><code>library(devtools)
-install_github("rafaelsommer1/emocempr")</code></pre>
+<pre><code>if (!require("devtools")){
+        install.packages("devtools")}
+        
+devtools::install_github("rafaelsommer1/emocempr")</code></pre>
 <p>We suggest you update from the source code each time you wish to use the package, since it is a project on development. For that, code as following:</p>
-<pre><code>install_github("hrbrmstr/dtupdate")
-library(dtupdate)
-github_update()</code></pre>
+<pre><code>if (!require("dtupdate")){
+        devtools::install_github("hrbrmstr/dtupdate")}
+
+dtupdate::github_update()</code></pre>
 </div>
 <div id="common-applications" class="section level2">
 <h2 class="hasAnchor">
 <a href="#common-applications" class="anchor"></a>Common applications</h2>
 <p>All functions are based on exported data from qualtrics forms with this configuration (csv numeric)</p>
 <p><img src="https://i.imgur.com/GQHBnN7.png"></p>
-<p>After that, you can start using the package functions, usually, all data exported from qualtrics needs to be cleaned so it can be analyzed. The package provides functions which perform this in basically all EMOCEMP forms, so for eg, given a Visit 1 form:</p>
-<pre><code>v1 &lt;- clean_v1("file.csv")</code></pre>
-<p>This read the csv file downloaded from qualtrics, clean it and store the results in a R object: <code>v1</code>. You can perform analysis directly in R using this object or write a csv file from the cleaned data in order to analyze other packages such as GraphPad, SPSS, Excel…</p>
+<p>After that, you can start using the package functions. Usually, all data exported from qualtrics needs to be cleaned so it can be analyzed. The package provides functions which perform for in basically all EMOCEMP forms, so for eg, given a Visit 1 form:</p>
+<pre><code>library(emocempr)
+
+v1 &lt;- clean_v1("file.csv")</code></pre>
+<p>This read the <em>.csv</em> file downloaded from qualtrics, clean it and store the results in a new R object: <code>v1</code>. You can perform analysis directly in R using this object or write a new <em>.csv</em> file with the cleaned data in order to analyze data in other packages such as GraphPad, SPSS, Excel…</p>
 <p>If this is inteded, something like:</p>
 <pre><code><a href="https://rdrr.io/r/utils/write.table.html">write.csv2(v1, "filename")</a></code></pre>
 <p>Should do it.</p>
-<p>Further, there are package functions that allow for data manipulation in R. So, in case you wanted to bind multiple visits data you can use the <code>merge_visits</code> function</p>
+<p>Further, there are package functions that allow for data manipulation. So, in case you wanted to bind multiple visits data you can use the <code>merge_visits</code> function, which select a minor group of variables</p>
 <pre><code>v1 &lt;- clean_v1("fileV1.csv")
 v2 &lt;- clean_v2("fileV2.csv")
 v3 &lt;- clean_v3("fileV3.csv")
 merged &lt;- merge_visits(v1,v2,v3, mode = "long", all.patients=FALSE)</code></pre>
-<p>This will use <strong>CLEANED</strong> data from visits 1, 2 and 3, combine them into a “long” format (each observation as a line) and only for patients who have data collected from all 3 visits (<code>all.patients=FALSE</code>), and store the results into the <code>merged</code> object.</p>
-<p>As before, one may convert this object to a csv file for analyzing in other software or carry on the analysis whitin R.</p>
+<p>This will use <strong>CLEANED</strong> data from visits 1, 2 and 3, combine them into a “long” format (each observation as a line) using only patients who have data collected from all 3 visits (<code>all.patients=FALSE</code>), and store the results into the <code>merged</code> object.</p>
+<p>As before, one may convert this object into a <em>.csv</em> file for analyzing in other software or carry on the analysis whitin R.</p>
 </div>
 </div>
   </div>
