@@ -62,15 +62,31 @@
 <div id="emocempr-package" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#emocempr-package" class="anchor"></a>emocempR Package</h1></div>
-<div id="the-package" class="section level2">
+<div id="about-emocempr" class="section level2">
 <h2 class="hasAnchor">
-<a href="#the-package" class="anchor"></a>The package?</h2>
+<a href="#about-emocempr" class="anchor"></a>About emocempr</h2>
 <p>This is a package for internal use by the Multicentric Study of Pediatric Multiple Sclerosis (EMOCEMP) investigators. Here, we provide functions that facilitate manipulating data directly extracted from qualtrics in the <em>.csv</em> numeric format. Moreover, this functions are used to generate reproducible and automated analysis, as well as an automated dashboard for the purpose of investigator consult.</p>
+<p>The emocempR package depends on fuctions from other libraries, so it is recommended that you have installed the following packages:</p>
+<ul>
+<li>data.table</li>
+<li>stringr</li>
+<li>dplyr</li>
+<li>lubridate</li>
+<li>irr</li>
+</ul>
+<p>This can be accomplished with this simple code:</p>
+<pre><code>packages &lt;- c("data.table","irr","dplyr","stringr")
+for (i in packages){
+        if(!require(i)){
+                install.packages(i)
+        }
+} </code></pre>
+<p>You are not required to install all this dependencies, since the emocempr package should import the needed functions. However, since it is a package in development, it is recomended that you have all of them in your R library to prevent any kind of importation errors.</p>
 </div>
 <div id="how-to-install" class="section level2">
 <h2 class="hasAnchor">
 <a href="#how-to-install" class="anchor"></a>How to install</h2>
-<p>To install the emocempr package to as following in your R console.</p>
+<p>To install the emocempr package type the following code in your R console.</p>
 <pre><code>if (!require("devtools")){
         install.packages("devtools")}
         
