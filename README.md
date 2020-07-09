@@ -1,5 +1,5 @@
 # emocempR Package
-## The package?
+## About emocempr
 This is a package for internal use by the Multicentric Study of Pediatric Multiple Sclerosis (EMOCEMP) investigators.
 Here, we provide functions that facilitate manipulating data directly extracted from qualtrics in the *.csv* numeric format.
 Moreover, this functions are used to generate reproducible and automated analysis, as well as an automated dashboard for the purpose of investigator consult.
