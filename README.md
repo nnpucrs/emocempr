@@ -13,7 +13,7 @@ The emocempR package depends on fuctions from other libraries, so it is recommen
 
 This can be accomplished with this simple code:
 ```
-packages <- c("data.table","irr","dplyr","stringr")
+packages <- c("data.table","irr","dplyr","stringr","lubridate")
 for (i in packages){
         if(!require(i)){
                 install.packages(i)
