@@ -4,8 +4,28 @@ This is a package for internal use by the Multicentric Study of Pediatric Multip
 Here, we provide functions that facilitate manipulating data directly extracted from qualtrics in the *.csv* numeric format.
 Moreover, this functions are used to generate reproducible and automated analysis, as well as an automated dashboard for the purpose of investigator consult.
 
+The emocempR package depends on fuctions from other libraries, so it is recommended that you have installed the following packages:
+- data.table
+- stringr
+- dplyr
+- lubridate
+- irr
+
+This can be accomplished with this simple code:
+```
+packages <- c("data.table","irr","dplyr","stringr")
+for (i in packages){
+        if(!require(i)){
+                install.packages(i)
+        }
+} 
+```
+
+You are not required to install all this dependencies, since the emocempr package should import the needed functions. However, since it is a package in development, it is recomended that you have all of them in your R library to prevent any kind of importation errors.
+
+
 ## How to install
-To install the emocempr package to as following in your R console.
+To install the emocempr package type the following code in your R console.
 
 ```
 if (!require("devtools")){
