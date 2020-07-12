@@ -1,5 +1,5 @@
 
-![](https://imgur.com/i4VLSKE)
+![](https://i.imgur.com/i4VLSKE.png)
 
 # emocempR Package
 ## About emocempr
