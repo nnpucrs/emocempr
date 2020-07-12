@@ -1,3 +1,6 @@
+
+![](https://imgur.com/i4VLSKE)
+
 # emocempR Package
 ## About emocempr
 This is a package for internal use by the Multicentric Study of Pediatric Multiple Sclerosis (EMOCEMP) investigators.
