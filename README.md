@@ -1,3 +1,5 @@
+![](https://i.imgur.com/XuKDHvp.png)
+
 # emocempR Package
 <!-- badges: start -->
   [![Travis build status](https://travis-ci.com/rafaelsommer1/emocemp.analysis.svg?branch=master)](https://travis-ci.com/rafaelsommer1/emocempr)
