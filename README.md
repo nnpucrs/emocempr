@@ -1,4 +1,7 @@
 # emocempR Package
+<!-- badges: start -->
+  [![Travis build status](https://travis-ci.com/rafaelsommer1/emocemp.analysis.svg?branch=master)](https://travis-ci.com/rafaelsommer1/emocempr)
+  <!-- badges: end -->
 ## About emocempr
 This is a package for internal use by the Multicentric Study of Pediatric Multiple Sclerosis (EMOCEMP) investigators.
 Here, we provide functions that facilitate manipulating data directly extracted from qualtrics in the *.csv* numeric format.

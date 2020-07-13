@@ -1,5 +1,6 @@
 #' Takes the raw .csv file exported from qualtrics and clean it
 #' @description The raw data need to be exported from qualtrics EMOCEMP V1 in .csv with the numeric values option checked
+#' @param simple Default = FALSE ; If TRUE, select a few number of variables
 #' @param datafile a V1 .csv file exported from qualtrics with numeric data option
 #' @return a data.frame with cleaned data which may be used to merge with other visits
 #' @export
@@ -9,7 +10,7 @@
 #' @importFrom utils read.csv
 #' @author R.C.S
 
-clean_v1 <- function (datafile){
+clean_v1 <- function (datafile, simple = FALSE){
   emocemp_messy <- read.csv(datafile,
                             skip = 1,
                             encoding = "UTF-8") # Load Data
@@ -276,6 +277,14 @@ clean_v1 <- function (datafile){
 
   cleaned <- emocemp[, ! names(emocemp) %in% col_2_exclude, drop = F]
   print("Script completed")
+
+
+  if (simple) {
+    cleaned <- cleaned %>%
+      select("data_visita")
+
+  }
+
 
   return(cleaned)
 
