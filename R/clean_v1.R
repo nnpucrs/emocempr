@@ -10,7 +10,7 @@
 #' @importFrom utils read.csv
 #' @author R.C.S
 
-clean_v1 <- function (datafile, simple = FALSE){
+clean_v1 <- function (datafile){
   emocemp_messy <- read.csv(datafile,
                             skip = 1,
                             encoding = "UTF-8") # Load Data
@@ -279,11 +279,7 @@ clean_v1 <- function (datafile, simple = FALSE){
   print("Script completed")
 
 
-  if (simple) {
-    cleaned <- cleaned %>%
-      select("data_visita")
 
-  }
 
 
   return(cleaned)
