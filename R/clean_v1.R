@@ -215,6 +215,10 @@ clean_v1 <- function (datafile){
   emocemp <- emocemp %>%
     mutate(disease_duration_m = as.integer (
       (data_visita - data_onset) / 12 ) )
+
+  # Vaccine date
+  emocemp$data_vacina <- dmy(emocemp$data_vacina)
+
   # Replace negative values with NAs
   wrong_dd <- emocemp$disease_duration_m < 0
   emocemp$disease_duration_m[wrong_dd] <- NA
@@ -225,9 +229,8 @@ clean_v1 <- function (datafile){
     mutate(idade_10 = ifelse(idade_onset <= 10, "m", "M") )
   print("Done")
   print("Cleaning strings")
-  # -----------------------------------------
-  # LCR -------------------------------------
-  # -----------------------------------------
+
+  # LCR
   lcr_messy <- emocemp %>%
     select(lcr_cel, lcr_dif, lcr_prot, lcr_boc)
 
@@ -244,23 +247,25 @@ clean_v1 <- function (datafile){
   lcr_messy$prot <- as.character(lcr_messy$prot)
   lcr_messy$dif <- as.character(lcr_messy$dif)
 
-  # Inputting NAs ----------------------------------------------------------
+
   lcr_messy$boc[!str_detect(lcr_messy$boc, "")] <- NA
   lcr_messy$cel[!str_detect(lcr_messy$cel, "")] <- NA
   lcr_messy$prot[!str_detect(lcr_messy$prot, "")] <- NA
-  # Cleaning strings --------------------------------------------------------
-  # Protein LCR
+
+
   correct_prot <- str_extract(lcr_messy$prot, "^\\d{1,3}[\\. ,]?\\d{0,3}$")
   correct_prot <- str_replace(correct_prot, ",", ".")
   correct_prot <- as.numeric(correct_prot)
   emocemp$lcr_prot <- correct_prot
-  # Cel LCR
+
   correct_cel <- str_extract(lcr_messy$cel, "^\\d{1,4}[\\. ,]?\\d{0,3}")
   correct_cel <- str_replace(correct_cel, "," , ".")
   correct_cel <- as.numeric(correct_cel)
   emocemp$lcr_cel <- correct_cel
-  # Oligoclonal bands
+
   lcr_messy$boc <- tolower(lcr_messy$boc)
+
+
   # Create new IMC column with calculated from weight and height
   emocemp <- emocemp %>%
     mutate(imc_c = peso / altura^2)
