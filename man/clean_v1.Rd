@@ -4,10 +4,14 @@
 \alias{clean_v1}
 \title{Takes the raw .csv file exported from qualtrics and clean it}
 \usage{
-clean_v1(datafile)
+clean_v1(datafile, antibodies = NULL, exclude = TRUE)
 }
 \arguments{
 \item{datafile}{a V1 .csv file exported from qualtrics with numeric data option}
+
+\item{antibodies}{an autoantibodies .csv file to be merged with the visit data}
+
+\item{exclude}{If TRUE, exclude patients excluded from the study in the final cleaned data frame}
 }
 \value{
 a data.frame with cleaned data which may be used to merge with other visits

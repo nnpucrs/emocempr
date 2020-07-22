@@ -20,12 +20,24 @@
 
 merge_visits <- function (v1, v2, v3 = NULL, mode = c("long","wide"), all.patients = FALSE) {
 
+        if ("mog" %in% colnames(v1)){
         v1_new <- v1 %>%
                 select(c("id_paciente","data_visita","nascimento","idade_10",
                          "sex","etnic","peso","altura","imc","infeccao_2meses",
                          "data_vacina","tabagismo","edss","lcr_cel","lcr_prot",
                          "dmd","romboencefalite","adem","mielite_transversa",
-                         "mielite_parcial","neurite_u","neurite_b"))
+                         "mielite_parcial","neurite_u","neurite_b","mog","obese",
+                         "sobrepe","inf_ou_vac_rec"))}
+        else {
+        v1_new <- v1 %>%
+                select(c("id_paciente","data_visita","nascimento","idade_10",
+                         "sex","etnic","peso","altura","imc","infeccao_2meses",
+                         "data_vacina","tabagismo","edss","lcr_cel","lcr_prot",
+                         "dmd","romboencefalite","adem","mielite_transversa",
+                         "mielite_parcial","neurite_u","neurite_b","obese",
+                         "sobrepe","inf_ou_vac_rec"))
+        }
+
         v2_new <- v2 %>%
                 mutate(dmd = ifelse(nenhum_dmd == 1,0,1)) %>%
                 select(c("id_paciente","data_visita","peso","altura",

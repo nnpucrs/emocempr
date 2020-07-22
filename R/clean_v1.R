@@ -1,6 +1,7 @@
 #' Takes the raw .csv file exported from qualtrics and clean it
 #' @description The raw data need to be exported from qualtrics EMOCEMP V1 in .csv with the numeric values option checked
-#' @param simple Default = FALSE ; If TRUE, select a few number of variables
+#' @param antibodies an autoantibodies .csv file to be merged with the visit data
+#' @param exclude If TRUE, exclude patients excluded from the study in the final cleaned data frame
 #' @param datafile a V1 .csv file exported from qualtrics with numeric data option
 #' @return a data.frame with cleaned data which may be used to merge with other visits
 #' @export
@@ -8,9 +9,10 @@
 #' @import stringr
 #' @importFrom lubridate dmy
 #' @importFrom utils read.csv
+#' @importFrom zscorer addWGSR
 #' @author R.C.S
 
-clean_v1 <- function (datafile){
+clean_v1 <- function (datafile, antibodies = NULL, exclude = TRUE){
   emocemp_messy <- read.csv(datafile,
                             skip = 1,
                             encoding = "UTF-8") # Load Data
@@ -270,6 +272,36 @@ clean_v1 <- function (datafile){
   emocemp <- emocemp %>%
     mutate(imc_c = peso / altura^2)
 
+
+  # Z-Score and nutritional status
+  emocemp <- emocemp %>%
+    mutate(altura_cm = altura * 100) %>%
+    mutate(idade_dias = idade_visita1 * 365.25) %>%
+    mutate(sex_coded = ifelse(sex == "m", 1, 2))
+
+   emocemp <- zscorer::addWGSR(emocemp, sex="sex_coded",
+                                   firstPart="peso",
+                                   secondPart="altura_cm",
+                                   thirdPart = "idade_dias",
+                                   index="bfa")
+   emocemp <- emocemp %>%
+     mutate(obese =ifelse(bfaz >= 2,1,0)) %>%
+     mutate(sobrepe = ifelse(bfaz >= 1,1,0))
+
+   # Join vaccination and infection data
+   emocemp <- emocemp %>%
+     mutate(vacina_m = as.integer ((data_onset - data_vacina) / 12 ) )
+
+   # NA Wrong dates
+   wrong_dtvacina <- emocemp$vacina_m < 0
+   emocemp$vacina_m[wrong_dtvacina] <- NA
+   # Create inf_ou_vac
+   emocemp <- emocemp %>%
+     mutate(vacina_recente = ifelse(vacina_m <= 2, "1", "0") ) %>%
+     mutate (inf_ou_vac_rec = ifelse(vacina_m==1 | infeccao_2meses == "sim", "1", "0" ))
+
+   emocemp$inf_ou_vac_rec <- as.factor (emocemp$inf_ou_vac_rec)
+
   print("Done")
   print("Writing final data frame")
   col_2_exclude <- c("edss_i",
@@ -281,12 +313,23 @@ clean_v1 <- function (datafile){
                      )
 
   cleaned <- emocemp[, ! names(emocemp) %in% col_2_exclude, drop = F]
+
+  # Merge Antibodies
+  if(!is.null(antibodies)){
+  print("Merging Autoantibodies")
+    autoantibody <- read.csv(antibodies)
+    autoantibody <- rename(autoantibody,
+                           id_paciente = id ,
+                           mog = mog.positivo)
+    cleaned <- merge(emocemp, autoantibody, by = "id_paciente", all.x = TRUE)}
+
+  # Exclude patients
+  if(exclude){
+  data("excluded")
+  cleaned <- subset (cleaned, !(id_paciente %in% excluded))
+  }
+
   print("Script completed")
-
-
-
-
-
   return(cleaned)
 
 }
