@@ -27,7 +27,7 @@ merge_visits <- function (v1, v2, v3 = NULL, mode = c("long","wide"), all.patien
                          "data_vacina","tabagismo","edss","lcr_cel","lcr_prot",
                          "dmd","romboencefalite","adem","mielite_transversa",
                          "mielite_parcial","neurite_u","neurite_b","mog","obese",
-                         "sobrepe","inf_ou_vac_rec"))}
+                         "sobrepe","inf_ou_vac_rec","outros_clinic"))}
         else {
         v1_new <- v1 %>%
                 select(c("id_paciente","data_visita","nascimento","idade_10",
@@ -35,7 +35,7 @@ merge_visits <- function (v1, v2, v3 = NULL, mode = c("long","wide"), all.patien
                          "data_vacina","tabagismo","edss","lcr_cel","lcr_prot",
                          "dmd","romboencefalite","adem","mielite_transversa",
                          "mielite_parcial","neurite_u","neurite_b","obese",
-                         "sobrepe","inf_ou_vac_rec"))
+                         "sobrepe","inf_ou_vac_rec","outros_clinic"))
         }
 
         v2_new <- v2 %>%
