@@ -325,7 +325,6 @@ clean_v1 <- function (datafile, antibodies = NULL, exclude = TRUE){
 
   # Exclude patients
   if(exclude){
-  data("excluded")
   cleaned <- subset (cleaned, !(id_paciente %in% excluded))
   }
 
