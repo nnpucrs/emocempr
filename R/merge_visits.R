@@ -22,7 +22,7 @@ merge_visits <- function (v1, v2, v3 = NULL, mode = c("long","wide"), all.patien
 
         if ("mog" %in% colnames(v1)){
         v1_new <- v1 %>%
-                select(c("id_paciente","data_visita","nascimento","idade_10",
+                select(c("id_paciente","data_visita","nascimento","idade_10","idade_onset",
                          "sex","etnic","peso","altura","imc","infeccao_2meses",
                          "data_vacina","tabagismo","edss","lcr_cel","lcr_prot",
                          "dmd","romboencefalite","adem","mielite_transversa",
@@ -30,7 +30,7 @@ merge_visits <- function (v1, v2, v3 = NULL, mode = c("long","wide"), all.patien
                          "sobrepe","inf_ou_vac_rec","outros_clinic","bfaz"))}
         else {
         v1_new <- v1 %>%
-                select(c("id_paciente","data_visita","nascimento","idade_10",
+                select(c("id_paciente","data_visita","nascimento","idade_10","idade_onset",
                          "sex","etnic","peso","altura","imc","infeccao_2meses",
                          "data_vacina","tabagismo","edss","lcr_cel","lcr_prot",
                          "dmd","romboencefalite","adem","mielite_transversa",

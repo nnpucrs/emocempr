@@ -55,8 +55,8 @@ clean_v1 <- function (datafile, antibodies = NULL, exclude = TRUE){
   name_c <- c("neurite_b",
               "neurite_u",
               "mielite_parcial",
-              "adem",
               "mielite_transversa",
+              "adem",
               "romboencefalite",
               "outros_clinic")
 
