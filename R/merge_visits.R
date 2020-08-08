@@ -108,7 +108,7 @@ merge_visits <- function (v1, v2, v3 = NULL, mode = c("long","wide"), all.patien
 
                 tmp_long <- merge(v1_new,v2_new,by = "id_paciente",suffixes = c("1","2"),
                                                    all.x = TRUE)
-                merged_long <- merge(tmp_long, v3_new, by = "id_paciente")
+                merged_long <- merge(tmp_long, v3_new, by = "id_paciente", all.x = TRUE)
 
                 } else {
                         tmp_long <- merge(v1_new,v2_new,by = "id_paciente",suffixes = c("1","2"))
