@@ -317,7 +317,7 @@ clean_v1 <- function (datafile, antibodies = NULL, exclude = TRUE){
   # Merge Antibodies
   if(!is.null(antibodies)){
   print("Merging Autoantibodies")
-    autoantibody <- read.csv(antibodies)
+    autoantibody <- read.csv2(antibodies)
     autoantibody <- rename(autoantibody,
                            id_paciente = id ,
                            mog = mog.positivo)
