@@ -218,6 +218,10 @@ clean_v1 <- function (datafile, antibodies = NULL, exclude = TRUE){
     mutate(disease_duration_m = as.integer (
       (data_visita - data_onset) / 12 ) )
 
+  # Disease duration at visit (days)
+  emocemp <- emocemp %>%
+    mutate(disease_duration_d = data_visita - data_onset)
+
   # Vaccine date
   emocemp$data_vacina <- dmy(emocemp$data_vacina)
 
