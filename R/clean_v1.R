@@ -189,6 +189,15 @@ clean_v1 <- function (datafile, antibodies = NULL, exclude = TRUE){
     mutate(edss_i = if_else(edss < 1, TRUE, FALSE))
   # Change 0.5 for zeros
   emocemp$edss[emocemp$edss_i] <- 0
+  # SF
+  fs <- c( "sf_piramidal", "sf_cerebelar",
+           "sf_sensitivo", "sf_tronco", "sf_visual",
+           "sf_vesical_intestinal", "sf_cerebral")
+
+  for (i in 1:length(fs)) {
+    emocemp[,fs[i]] <- as.numeric(emocemp[,fs[i]])
+    emocemp[,fs[i]] <- emocemp[,fs[i]] - 1
+  }
 
   print("Done")
   # Dates ------------------------------------------------
@@ -215,12 +224,11 @@ clean_v1 <- function (datafile, antibodies = NULL, exclude = TRUE){
     ))
   # Disease duration at visit (months)
   emocemp <- emocemp %>%
-    mutate(disease_duration_m = as.integer (
-      (data_visita - data_onset) / 12 ) )
+    mutate(disease_duration_m = (emocemp$data_visita - emocemp$data_onset) / 30 )
 
   # Disease duration at visit (days)
   emocemp <- emocemp %>%
-    mutate(disease_duration_d = data_visita - data_onset)
+    mutate(disease_duration_d = emocemp$data_visita - emocemp$data_onset)
 
   # Vaccine date
   emocemp$data_vacina <- dmy(emocemp$data_vacina)
