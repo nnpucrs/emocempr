@@ -3,6 +3,7 @@
 export(clean_brain)
 export(clean_orbit)
 export(clean_spinal)
+export(clean_tele)
 export(clean_v1)
 export(clean_v2)
 export(clean_v3)

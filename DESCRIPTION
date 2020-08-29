@@ -1,6 +1,6 @@
 Package: emocempr
 Title: Functions for analyzing EMOCEMP data
-Version: 1.1.1
+Version: 1.1.2
 Author: Rafael Canani Sommer <rafaelcasommer@gmail.com>
 Description: This package provides useful functions for importing, cleaning and analyzing data from the EMOCEMP study, all functions are based in data imported from qualtrics in .csv format with the numeric values.
 License: GPL-3 
